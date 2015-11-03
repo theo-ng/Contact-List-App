@@ -1,11 +1,12 @@
 class Contact
  
-  attr_accessor :name, :email
+  attr_accessor :name, :email, :digits
 
-  def initialize(name, email)
+  def initialize(name, email, digits)
     # TODO: assign local variables to instance variables
     @name = name
     @email = email
+    @digits = digits
   end
  
   def to_s
@@ -14,9 +15,9 @@ class Contact
  
   ## Class Methods
   class << self
-    def create(name, email)
+    def create(name, email, digits)
       # TODO: Will initialize a contact as well as add it to the list of contacts
-      contact = Contact.new(name, email)
+      contact = Contact.new(name, email, digits)
       cd = ContactDatabase.new
       idx = 0
       idx = cd.read_all.last[0] unless cd.read_all.empty?
@@ -38,7 +39,5 @@ class Contact
       not_found = "That contact doesn't exist"
       ContactDatabase.new.read_all.find(not_found) { |con| con[0].eql?(id) }
     end
-    
   end
- 
 end

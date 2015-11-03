@@ -12,6 +12,9 @@ require 'byebug'
 # end
 class ContactList
 
+  class DuplicateEntryError < StandardError
+  end
+
   @contacts = []
 
   class << self
@@ -23,7 +26,8 @@ class ContactList
       when 'list' then list
       when 'show' then show(args[1])
       when 'find' then find(args[1])
-        #Find a contact
+      else
+        puts "Invalid command"
       end
     end
 
@@ -36,24 +40,71 @@ class ContactList
     end
 
     def new_contact
-      puts "Full Name?"
-      name = STDIN.gets.chomp
-      puts "Email?"
-      email = STDIN.gets.chomp
-      Contact.create(name,email)
+      begin
+        puts "Email?"
+        email = STDIN.gets.chomp
+        if exists?(email)
+          raise DuplicateEntryError 
+        else
+          puts "Full Name?"
+          name = STDIN.gets.chomp
+          
+          digits = add_phone({})
+          Contact.create(name, email, digits)
+        end
+      rescue DuplicateEntryError
+        puts "Email already in use!"
+      end
     end
 
     def list
-      Contact.all.each { |con| puts "#{con[0]}: #{con[1]} (#{con[2]})" }
+      Contact.all.each do |con| 
+        # byebug
+        print_contact(con) 
+      end
     end
 
     def show(id)
       # display details of contact[:id]
-      puts Contact.show(id)
+      print_contact(Contact.show(id))
     end
 
     def find(term)
-      puts Contact.find(term)
+      Contact.find(term).each { |contact| print_contact(contact)}
+    end
+
+    private
+    def print_contact(contact)
+      contact_info =  "#{contact[0]}: #{contact[1]} (#{contact[2]})"
+      unless contact[3] == nil
+        contact[3].each do |k,v|
+          contact_info << " #{v}: #{k} "
+        end
+      end
+      puts contact_info
+    end
+
+    def exists?(email)
+      exists = false
+      Contact.all.each do |contact|
+        exists = true if contact[2] == (email)
+      end
+      exists
+    end
+
+    def add_phone(digits)
+      puts "Would you like to link a phone number? y/n"
+      reply = STDIN.gets.chomp
+      if reply == 'y'
+        puts "Phone Number?"
+        number = STDIN.gets.chomp
+        puts "Label for this number?"
+        label = STDIN.gets.chomp
+        digits[number] = label
+        add_phone(digits)
+      else
+        digits
+      end
     end
   end
 end
