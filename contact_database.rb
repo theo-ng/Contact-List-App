@@ -6,18 +6,22 @@ class ContactDatabase
 
   PATH = 'contacts.csv'
 
-  # def read
-  #   contacts = []
-  #   CSV.open(PATH, "r") do |row|
-  #     contacts << row
-  #   end
-  # end
+  def read_all
+    contacts = []
+    CSV.read(PATH).each do |row|
+      contacts << row
+    end
+    contacts
+  end
 
-  # def write(contact)
-  #   # byebug
-  #   CSV.open(PATH, "w") do |csv|
-  #     csv << [contact]
-  #   end
-  # end
-
+  def create(contact, index)
+    # byebug
+    CSV.open(PATH, "a") do |csv|
+      # byebug
+      csv << [index, contact.name, contact.email]
+    end
+  end
 end
+
+# me = ["Theo Ng", "theo@lhl.ca"]
+# ContactDatabase.new.create(me,)

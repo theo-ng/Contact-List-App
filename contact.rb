@@ -16,7 +16,12 @@ class Contact
   class << self
     def create(name, email)
       # TODO: Will initialize a contact as well as add it to the list of contacts
-      Contact.new(name, email)
+      contact = Contact.new(name, email)
+      cd = ContactDatabase.new
+      byebug
+      idx = 0
+      idx = cd.read_all.last[0] unless cd.read_all.empty?
+      cd.create(contact, idx.to_i + 1)
     end
  
     def find(term)

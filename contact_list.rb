@@ -37,11 +37,10 @@ class ContactList
 
     def new_contact
       puts "Full Name?"
-      name = gets.chomp
+      name = STDIN.gets.chomp
       puts "Email?"
-      email = gets.chomp
-      contact = Contact.create(name,email)
-      conacts << contact
+      email = STDIN.gets.chomp
+      Contact.create(name,email)
     end
   end
 end

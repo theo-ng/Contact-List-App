@@ -9,7 +9,7 @@ describe ContactList do
       find - Find a contact")
   end
   it 'should create a new contact' do
-    # expect(ContactList.new_contact().to
+    expect(ContactList.new_contact).to eql(["Theo Ng", "theo@lhl.ca"])
   end
   it 'should list all contacts' do
   end
