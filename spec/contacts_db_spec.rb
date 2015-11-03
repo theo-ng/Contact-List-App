@@ -1,4 +1,4 @@
-require_relative 'contact_database'
+require_relative '../contact_database'
 
 describe ContactDatabase do
   it 'should return empty string' do

@@ -1,6 +1,7 @@
 require 'optparse'
 require_relative 'contact'
 require_relative 'contact_database'
+require 'byebug'
 
 # TODO: Implement command line interaction
 # This should be the only file where you use puts and gets
@@ -14,15 +15,14 @@ class ContactList
   @contacts = []
 
   class << self
+
     def main(args)
       case args[0]
       when 'help' then puts help
       when 'new' then new_contact
-      when 'list'
-        #List all contacts
-      when 'show'
-        #Show a contact
-      when 'find'
+      when 'list' then list
+      when 'show' then show(args[1])
+      when 'find' then find(args[1])
         #Find a contact
       end
     end
@@ -41,6 +41,19 @@ class ContactList
       puts "Email?"
       email = STDIN.gets.chomp
       Contact.create(name,email)
+    end
+
+    def list
+      Contact.all.each { |con| puts "#{con[0]}: #{con[1]} (#{con[2]})" }
+    end
+
+    def show(id)
+      # display details of contact[:id]
+      puts Contact.show(id)
+    end
+
+    def find(term)
+      puts Contact.find(term)
     end
   end
 end

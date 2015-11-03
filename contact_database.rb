@@ -1,6 +1,5 @@
 ## TODO: Implement CSV reading/writing
 require 'csv'
-require 'byebug'
 
 class ContactDatabase
 
