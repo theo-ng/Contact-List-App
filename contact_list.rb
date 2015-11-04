@@ -79,9 +79,7 @@ class ContactList
       page.each { |contact| print_contact(contact) }
       unless array.empty?
         puts "-------Press space to see more-------"
-        if STDIN.getch == ' '
-          display_5(array)
-        end
+        display_5(array) if STDIN.getch == ' '
       end
     end
 
