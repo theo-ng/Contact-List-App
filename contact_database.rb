@@ -4,7 +4,7 @@ require 'byebug'
 
 class ContactDatabase
 
-  PATH = 'contacts.csv'
+  PATH = 'contacts.csv'.freeze
 
   def read_all
     contacts = []
@@ -16,11 +16,11 @@ class ContactDatabase
     contacts
   end
 
-  def create(contact, index)
+  def write(contact, index)
     # byebug
     CSV.open(PATH, "at") do |csv|
       # byebug
-      csv << [index, contact.name, contact.email, convert_phones(contact.digits).join(',')]
+      csv << [index, contact.name, contact.email, convert_phones(contact.phone_numbers).join(',')]
     end
   end
 
@@ -33,6 +33,3 @@ class ContactDatabase
     Hash[*numbers.split(',')]
   end
 end
-
-# me = ["Theo Ng", "theo@lhl.ca"]
-# ContactDatabase.new.create(me,)

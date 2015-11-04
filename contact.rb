@@ -1,43 +1,47 @@
 class Contact
  
-  attr_accessor :name, :email, :digits
+  attr_accessor :name, :email, :phone_numbers
 
-  def initialize(name, email, digits)
-    # TODO: assign local variables to instance variables
+  def initialize(name, email, phone_numbers)
     @name = name
     @email = email
-    @digits = digits
+    @phone_numbers = phone_numbers
   end
  
   def to_s
-    # TODO: return string representation of Contact
+    contact_info =  "#{contact[0]}: #{contact[1]} (#{contact[2]})"
+      unless contact[3] == nil
+        contact[3].each do |k,v|
+          contact_info << " #{v}: #{k} "
+        end
+      end
+    contact_info
   end
  
   ## Class Methods
   class << self
-    def create(name, email, digits)
-      # TODO: Will initialize a contact as well as add it to the list of contacts
-      contact = Contact.new(name, email, digits)
-      cd = ContactDatabase.new
-      idx = 0
-      idx = cd.read_all.last[0] unless cd.read_all.empty?
-      cd.create(contact, idx.to_i + 1)
+
+    def connect
+      ContactDatabase.new
+    end
+
+    def create(name, email, phone_numbers)
+      contact = Contact.new(name, email, phone_numbers)
+      connection = connect
+      index = connection.read_all.last[0] unless connection.read_all.empty?
+      connection.write(contact, index.to_i + 1)
     end
  
     def find(term)
-      # TODO: Will find and return contacts that contain the term in the first name, last name or email or phone numbers
-      ContactDatabase.new.read_all.select { |con| con.join(" ").include?(term) }
+      connect.read_all.select { |contact| contact.join(" ").include?(term) }
     end
  
     def all
-      # TODO: Return the list of contacts, as is
-      ContactDatabase.new.read_all
+      connect.read_all
     end
     
     def show(id)
-      # TODO: Show a contact, based on ID
-      not_found = "That contact doesn't exist"
-      ContactDatabase.new.read_all.find(not_found) { |con| con[0].eql?(id) }
+      connect.read_all.find { |contact| contact[0].eql?(id) }
     end
   end
 end

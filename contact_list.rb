@@ -52,56 +52,52 @@ class ContactList
           puts "Full Name?"
           name = STDIN.gets.chomp
           
-          digits = add_phone({})
-          Contact.create(name, email, digits)
+          phone_numbers = add_phone({})
+          Contact.create(name, email, phone_numbers)
         end
       rescue DuplicateEntryError
         puts "Email already in use!"
+        new_contact
       end
     end
 
     def list
-      display_5(Contact.all)
+      display_page(Contact.all)
     end
 
     def show(id)
-      # display details of contact[:id]
-      print_contact(Contact.show(id))
+      contact = Contact.show(id)
+      puts "That contact doesn't exist" if contact == nil
+      print_contact(contact)
     end
 
     def find(term)
-      display_5(Contact.find(term))
+      display_page(Contact.find(term))
     end
 
     private
-    def display_5(array)
+    def display_page(array)
       page = array.shift(5)
       page.each { |contact| print_contact(contact) }
       unless array.empty?
         puts "-------Press space to see more-------"
-        display_5(array) if STDIN.getch == ' '
+        display_page(array) if STDIN.getch == ' '
       end
     end
 
     def print_contact(contact)
-      contact_info =  "#{contact[0]}: #{contact[1]} (#{contact[2]})"
-      unless contact[3] == nil
-        contact[3].each do |k,v|
-          contact_info << " #{v}: #{k} "
-        end
-      end
-      puts contact_info
+      puts contact.to_s
     end
 
     def exists?(email)
       exists = false
       Contact.all.each do |contact|
-        exists = true if contact[2] == (email)
+        return true if contact[2] == (email)
       end
       exists
     end
 
-    def add_phone(digits)
+    def add_phone(phone_numbers)
       puts "Would you like to link a phone number? y/n"
       reply = STDIN.gets.chomp
       if reply == 'y'
@@ -109,10 +105,10 @@ class ContactList
         number = STDIN.gets.chomp
         puts "Label for this number?"
         label = STDIN.gets.chomp
-        digits[number] = label
-        add_phone(digits)
+        phone_numbers[number] = label
+        add_phone(phone_numbers)
       else
-        digits
+        phone_numbers
       end
     end
   end
