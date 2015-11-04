@@ -1,7 +1,10 @@
+#!/usr/bin/env ruby
+
 require 'optparse'
 require_relative 'contact'
 require_relative 'contact_database'
 require 'byebug'
+require 'io/console'
 
 # TODO: Implement command line interaction
 # This should be the only file where you use puts and gets
@@ -58,10 +61,7 @@ class ContactList
     end
 
     def list
-      Contact.all.each do |con| 
-        # byebug
-        print_contact(con) 
-      end
+      display_5(Contact.all)
     end
 
     def show(id)
@@ -70,10 +70,21 @@ class ContactList
     end
 
     def find(term)
-      Contact.find(term).each { |contact| print_contact(contact)}
+      display_5(Contact.find(term))
     end
 
     private
+    def display_5(array)
+      page = array.shift(5)
+      page.each { |contact| print_contact(contact) }
+      unless array.empty?
+        puts "-------Press space to see more-------"
+        if STDIN.getch == ' '
+          display_5(array)
+        end
+      end
+    end
+
     def print_contact(contact)
       contact_info =  "#{contact[0]}: #{contact[1]} (#{contact[2]})"
       unless contact[3] == nil

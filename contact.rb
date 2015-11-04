@@ -25,7 +25,7 @@ class Contact
     end
  
     def find(term)
-      # TODO: Will find and return contacts that contain the term in the first name, last name or email
+      # TODO: Will find and return contacts that contain the term in the first name, last name or email or phone numbers
       ContactDatabase.new.read_all.select { |con| con.join(" ").include?(term) }
     end
  
