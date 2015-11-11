@@ -7,6 +7,7 @@ class Contact
     @firstname = firstname
     @lastname = lastname
     @email = email
+    @id = id
   end
 
   def self.connection
@@ -31,25 +32,31 @@ class Contact
   end
 
   def self.find(id)
-    result = connection.exec_params('SELECT * FROM contacts WHERE id = $1;', [id])
-    return nil if result.ntuples == 0
-    Contact.new(result[0]['firstname'], result[0]['lastname'], result[0]['email'], id)
+    find_by('id', id, true)
   end
 
   def self.find_all_by_lastname(name)
-    result = connection.exec_params('SELECT * FROM contacts WHERE lastname = $1;', [name])
-    result.to_a
+    find_by('lastname', name, false)
   end
 
   def self.find_all_by_firstname(name)
-    result = connection.exec_params('SELECT * FROM contacts WHERE firstname = $1;', [name])
-    result.to_a
+    find_by('firstname', name, false)
   end
 
   def self.find_by_email(email)
-    result = connection.exec_params('SELECT * FROM contacts WHERE email = $1;', [email])
-    return nil if result.ntuples == 0
-    Contact.new(result[0]['firstname'], result[0]['lastname'], result[0]['email'], result[0]['id'])
+    find_by('email', email, true)
+  end
+
+  def self.find_by(column, value, unique)
+    result = connection.exec_params("SELECT * FROM contacts WHERE #{column} = $1;", [value])
+    return result.to_a unless unique
+    Contact.new(result[0]['firstname'], result[0]['lastname'], result[0]['email'], result[0]['id']) if result.ntuples > 0
+  end
+
+  def phones
+    result = self.class.connection.exec_params('SELECT * FROM phones WHERE contact_id = $1;', [id])
+    # byebug
+    result.to_a
   end
 
   private :insert, :update
